@@ -1,3 +1,6 @@
+#[cfg(all(feature = "static_build", feature = "dynamic_linkage"))]
+compile_error!("features \"static_build\" and \"dynamic_linkage\" are mutually exclusive.");
+
 use pkg_config;
 use std::env;
 use std::path::PathBuf;
@@ -116,6 +119,7 @@ fn main() {
         .cargo_metadata(false)
         .probe("unicorn")
     {
+        #[cfg(not(feature = "static_build"))]
         Ok(lib) => {
             for dir in lib.link_paths {
                 println!("cargo:rustc-link-search=native={}", dir.to_str().unwrap());
@@ -129,7 +133,7 @@ fn main() {
                 println!("cargo:rustc-link-lib=m");
             }
         }
-        Err(_) => {
+        _ => {
             build_with_cmake();
         }
     };

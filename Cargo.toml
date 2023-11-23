@@ -41,3 +41,4 @@ pkg-config = { version = "0.3" }
 [features]
 default = []
 dynamic_linkage = []
+static_build = []
